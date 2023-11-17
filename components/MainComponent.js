@@ -4,7 +4,27 @@ import { Icon, Image } from 'react-native-elements';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem  } from '@react-navigation/drawer';
+import { baseUrl } from '../shared/baseUrl';
 
+
+import Reservation from './ReservationComponent';
+function ReservationNavigatorScreen() {
+  const ReservationNavigator = createStackNavigator();
+  return (
+    <ReservationNavigator.Navigator initialRouteName='Reservation'
+      screenOptions={{
+        headerStyle: { backgroundColor: '#7cc' },
+        headerTintColor: '#fff',
+        headerTitleStyle: { color: '#fff' }
+      }}>
+      <ReservationNavigator.Screen name='Reservation' component={Reservation}
+        options={({ navigation }) => ({
+          headerTitle: 'Reserve Table',
+          headerLeft: () => (<Icon name='menu' size={36} color='#fff' onPress={() => navigation.toggleDrawer()} />)
+        })} />
+    </ReservationNavigator.Navigator>
+  );
+}
 
 import About from './AboutComponent';
 function AboutNavigatorScreen() {
@@ -104,7 +124,7 @@ function CustomDrawerContent(props) {
     <DrawerContentScrollView {...props}>
       <View style={{ backgroundColor: '#7cc', height: 80, alignItems: 'center', flexDirection: 'row' }}>
         <View style={{ flex: 1 }}>
-          <Image source={require('./images/logo.png')} style={{ margin: 10, width: 80, height: 60 }} />
+          <Image source={{uri: baseUrl +'images/logo.png'}} style={{ margin: 10, width: 80, height: 60 }} />
         </View>
         <View style={{ flex: 2 }}>
           <Text style={{ color: '#fff', fontSize: 22, fontWeight: 'bold' }}>TienNT</Text>
@@ -142,9 +162,27 @@ function MainNavigatorScreen() {
           title: 'Contact Us', headerShown: false,
           drawerIcon: ({ focused, size }) => (<Icon name='contacts' size={size} color={focused ? '#7cc' : '#ccc'} />)
         }} />
+      <MainNavigator.Screen name='ReservationScreen' component={ReservationNavigatorScreen}
+        options={{
+          title: 'Reserve Table', headerShown: false,
+          drawerIcon: ({ focused, size }) => (<Icon name='cutlery' type='font-awesome' size={size} color={focused ? '#7cc' : '#ccc'} />)
+        }} />
     </MainNavigator.Navigator>
   );
 }
+
+// redux
+import { connect } from 'react-redux';
+import { fetchLeaders, fetchDishes, fetchComments, fetchPromos } from '../redux/ActionCreators';
+const mapDispatchToProps = (dispatch) => ({
+  fetchLeaders: () => dispatch(fetchLeaders()),
+  fetchDishes: () => dispatch(fetchDishes()),
+  fetchComments: () => dispatch(fetchComments()),
+  fetchPromos: () => dispatch(fetchPromos())
+});
+
+
+
 
 class Main extends Component {
   render() {
@@ -152,7 +190,15 @@ class Main extends Component {
       <NavigationContainer>
         <MainNavigatorScreen />
       </NavigationContainer>
+      
     );
   }
+  componentDidMount() {
+    // redux
+    this.props.fetchLeaders();
+    this.props.fetchDishes();
+    this.props.fetchComments();
+    this.props.fetchPromos();
+  }
 }
-export default Main;
+export default connect(null, mapDispatchToProps)(Main);
