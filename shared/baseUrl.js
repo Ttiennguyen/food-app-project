@@ -1,1 +1,0 @@
-export const baseUrl ='https://tiennt1.onrender.com/';
