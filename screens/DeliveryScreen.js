@@ -35,7 +35,7 @@ export default function DeliveryScreen() {
             <View className="flex-row justify-between px-5 pt-10">
                 <View>
                     <Text className="text-lg text-gray-700 font-semibold">
-                        Estimated Arrival
+                        Estimated Arrival time
                     </Text>
                     <Text className="text-3xl font-extrabold text-gray-700">
                         20-30 minutes
